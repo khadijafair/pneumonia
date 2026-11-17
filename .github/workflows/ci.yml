@@ -13,6 +13,12 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
+      - name: Install PyTorch (CPU)
+        run: pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
       - run: pip install -r requirements-dev.txt
       - run: ruff check .
-      - run: pytest -q
+      - run: ruff format --check .
+      - name: Tests (data + training smoke test)
+        run: pytest -q
+        env:
+          MLFLOW_DISABLE_AGENT_HINT: "1"

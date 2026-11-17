@@ -8,3 +8,6 @@ mlruns/
 outputs/
 *.ckpt
 *.onnx
+mlflow.db
+mlartifacts/
+results.zip

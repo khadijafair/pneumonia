@@ -1,0 +1,36 @@
+defaults:
+  - model: efficientnet_b0
+  - _self_
+
+data:
+  split_csv: data/splits/split.csv
+  root: null          # folder containing chest_xray/ (default: the "root" column of split.csv)
+  img_size: 224
+  batch_size: 32
+  num_workers: 4
+
+train:
+  epochs: 12
+  weight_decay: 1.0e-4
+  seed: 42
+  precision: 16-mixed
+  accelerator: auto
+  patience: 4
+
+trainer_extra: {}     # e.g. +trainer_extra.limit_train_batches=2 for a smoke test
+
+mlflow:
+  tracking_uri: sqlite:///mlflow.db     # view with: mlflow ui --backend-store-uri sqlite:///mlflow.db
+  artifact_location: mlartifacts
+  experiment: pneumonia-x
+
+out_dir: outputs
+
+hydra:
+  job:
+    chdir: false
+  run:
+    dir: outputs/hydra/${now:%Y-%m-%d_%H-%M-%S}
+  sweep:
+    dir: outputs/hydra/multirun_${now:%Y-%m-%d_%H-%M-%S}
+    subdir: ${model.key}

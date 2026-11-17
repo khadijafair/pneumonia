@@ -1,0 +1,4 @@
+key: efficientnet_b0
+name: efficientnet_b0.ra_in1k
+pretrained: true
+lr: 3.0e-4

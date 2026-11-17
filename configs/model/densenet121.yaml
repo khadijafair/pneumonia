@@ -1,0 +1,4 @@
+key: densenet121
+name: densenet121.tv_in1k
+pretrained: true
+lr: 3.0e-4
