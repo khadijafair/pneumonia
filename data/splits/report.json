@@ -1,0 +1,70 @@
+{
+  "dataset": "paultimothymooney/chest-xray-pneumonia",
+  "images_total": 5856,
+  "patients_total": 2791,
+  "unparsed_filenames": 1,
+  "exact_duplicates_removed": 32,
+  "original_split_audit": {
+    "images_per_split": {
+      "train": 5216,
+      "test": 624,
+      "val": 16
+    },
+    "patients_shared_train_val": 0,
+    "images_in_val_of_patients_shared_train_val": 0,
+    "identical_images_train_val": 0,
+    "patients_shared_train_test": 264,
+    "images_in_test_of_patients_shared_train_test": 416,
+    "identical_images_train_test": 0,
+    "patients_shared_val_test": 0,
+    "images_in_test_of_patients_shared_val_test": 0,
+    "identical_images_val_test": 0
+  },
+  "original_split": {
+    "train": {
+      "images": 5216,
+      "patients": 2636,
+      "pneumonia_rate": 0.7429,
+      "bacteria": 2530,
+      "virus": 1344
+    },
+    "val": {
+      "images": 16,
+      "patients": 15,
+      "pneumonia_rate": 0.5,
+      "bacteria": 8,
+      "virus": 0
+    },
+    "test": {
+      "images": 624,
+      "patients": 404,
+      "pneumonia_rate": 0.625,
+      "bacteria": 242,
+      "virus": 148
+    }
+  },
+  "new_split": {
+    "train": {
+      "images": 4160,
+      "patients": 1994,
+      "pneumonia_rate": 0.7291,
+      "bacteria": 1972,
+      "virus": 1060
+    },
+    "val": {
+      "images": 832,
+      "patients": 399,
+      "pneumonia_rate": 0.7284,
+      "bacteria": 389,
+      "virus": 217
+    },
+    "test": {
+      "images": 832,
+      "patients": 397,
+      "pneumonia_rate": 0.7284,
+      "bacteria": 399,
+      "virus": 207
+    }
+  },
+  "seed": 42
+}
