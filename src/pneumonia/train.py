@@ -71,7 +71,6 @@ def run(cfg: DictConfig) -> dict:
             **OmegaConf.to_container(cfg, resolve=True),
             "git_commit": _git_commit(),
             "split_csv_md5": _md5(cfg.data.split_csv),
-            "pos_weight": round(dm.pos_weight(), 4),
             "n_params_m": round(sum(p.numel() for p in model.parameters()) / 1e6, 2),
         }
     )

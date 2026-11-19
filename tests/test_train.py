@@ -22,7 +22,7 @@ def _fake_split(tmp_path: Path) -> Path:
     for split in ("train", "val", "test"):
         (root / split).mkdir(parents=True)  # find_dataset_root needs train/ val/ test/
         for i in range(8):
-            target = i % 2
+            target = int(i % 4 != 0)  # 2 normal / 6 pneumonia: pos_weight = 1/3, not round
             label = "PNEUMONIA" if target else "NORMAL"
             rel = f"{split}/{label}/img_{i}.jpeg"
             (root / rel).parent.mkdir(parents=True, exist_ok=True)
