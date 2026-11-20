@@ -57,7 +57,7 @@ def main() -> None:
     calib = rng.uniform(size=len(ref)) < 0.2  # local recalibration subset
 
     report: dict = {"rsna_counts": counts, "models": {}}
-    rows, rows_thr, rows_local = [], [], []
+    rows, rows_thr, rows_local, rows_classes = [], [], [], []
     main_frames = {m: rsna[m][main_mask].reset_index(drop=True) for m in models}
     boots = patient_bootstrap(main_frames, roc_auc_score, n=args.n_boot, seed=args.seed)
 
@@ -97,7 +97,21 @@ def main() -> None:
             f"| {m} | {t:.4f} | {pct(same['sensitivity'])} / {pct(same['specificity'])} | "
             f"{tl:.4f} | {pct(loc['sensitivity'])} / {pct(loc['specificity'])} |"
         )
+
+        def pair_auc(a: str, b: str, d=d) -> float:
+            s_ = d[d["subtype"].isin([a, b])]
+            return float(roc_auc_score(s_["subtype"] == a, s_["prob"]))
+
+        pairs = {
+            "opacity_vs_normal": pair_auc("rsna_opacity", "rsna_normal"),
+            "other_vs_normal": pair_auc("rsna_not_normal", "rsna_normal"),
+            "opacity_vs_other": pair_auc("rsna_opacity", "rsna_not_normal"),
+        }
+        rows_classes.append(
+            "| " + m + " | " + " | ".join(f"{v:.4f}" for v in pairs.values()) + " |"
+        )
         report["models"][m] = {
+            "auroc_between_classes": pairs,
             "threshold_internal": t,
             "internal_test": internal,
             "rsna_main": ext,
@@ -132,6 +146,13 @@ def main() -> None:
         "|---|---|---|---|---|",
         *rows_thr,
         "",
+        "## What does the model really detect? (AUROC between RSNA classes)",
+        "",
+        "| model | opacity vs normal | other abnormality vs normal | "
+        "opacity vs other abnormality |",
+        "|---|---|---|---|",
+        *rows_classes,
+        "",
         "## Local recalibration: Youden threshold set on 20 % of RSNA, evaluated on 80 %",
         "",
         "| model | internal threshold | sens. / spec. | local threshold | sens. / spec. |",
@@ -139,6 +160,52 @@ def main() -> None:
         *rows_local,
         "",
     ]
+    try:
+        import matplotlib
+
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+        from sklearn.metrics import roc_curve
+
+        fig, axes = plt.subplots(1, len(models) + 1, figsize=(4.2 * (len(models) + 1), 3.8))
+        for m, ax in zip(models, axes[1:], strict=True):
+            d = rsna[m]
+            for sub, name in (
+                ("rsna_normal", "Normal"),
+                ("rsna_not_normal", "Other abnormality"),
+                ("rsna_opacity", "Lung opacity"),
+            ):
+                ax.hist(
+                    d.loc[d.subtype == sub, "prob"],
+                    bins=40,
+                    range=(0, 1),
+                    alpha=0.5,
+                    density=True,
+                    label=name,
+                )
+            ax.axvline(report["models"][m]["threshold_internal"], color="k", ls="--", lw=1)
+            ax.set(title=f"{m}: RSNA probabilities", xlabel="predicted probability")
+            ax.legend(fontsize=7)
+        ax = axes[0]
+        for m in models:
+            test = pd.read_csv(args.results / m / "pred_test.csv")
+            f1, t1, _ = roc_curve(test["target"], test["prob"])
+            f2, t2, _ = roc_curve(rsna[m]["target"][main_mask], rsna[m]["prob"][main_mask])
+            (line,) = ax.plot(f1, t1, lw=1, label=f"{m} internal")
+            ax.plot(f2, t2, lw=1.5, ls="--", color=line.get_color(), label=f"{m} RSNA")
+        ax.plot([0, 1], [0, 1], "k:", lw=1)
+        ax.set(
+            title="ROC: children (solid) vs adults (dashed)",
+            xlabel="1 - specificity",
+            ylabel="sensitivity",
+        )
+        ax.legend(fontsize=6, loc="lower right")
+        fig.tight_layout()
+        fig.savefig(args.results / "external.png", dpi=120)
+        lines.append("![internal vs external](external.png)")
+    except ImportError:
+        pass
+
     (args.results / "evaluation_external.md").write_text("\n".join(lines))
     (args.results / "evaluation_external.json").write_text(
         json.dumps(report, indent=2, default=float)

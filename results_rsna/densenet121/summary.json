@@ -1,0 +1,9 @@
+{
+  "model": "densenet121",
+  "best_epoch_val_auroc": 0.9970574975013733,
+  "test_loss": 0.0505,
+  "test_accuracy": 0.9724,
+  "test_auroc": 0.9964,
+  "test_recall": 0.9835,
+  "test_specificity": 0.9425
+}

@@ -1,0 +1,222 @@
+{
+  "rsna_counts": {
+    "rsna_not_normal": 11821,
+    "rsna_normal": 8851,
+    "rsna_opacity": 6012
+  },
+  "models": {
+    "densenet121": {
+      "auroc_between_classes": {
+        "opacity_vs_normal": 0.9564595811202135,
+        "other_vs_normal": 0.8602977648236096,
+        "opacity_vs_other": 0.7336534035107745
+      },
+      "threshold_internal": 0.609375,
+      "internal_test": {
+        "auroc": 0.9964477642454511,
+        "auprc": 0.9986643872292459,
+        "brier": 0.020450538801804197,
+        "ece": 0.029597477598584963,
+        "threshold": 0.609375,
+        "tp": 593,
+        "fn": 13,
+        "fp": 8,
+        "tn": 218,
+        "sensitivity": 0.9785478547854786,
+        "specificity": 0.9646017699115044,
+        "ppv": 0.9866888519134775,
+        "npv": 0.9437229437229437,
+        "accuracy": 0.9747596153846154
+      },
+      "rsna_main": {
+        "auroc": 0.9564595811202135,
+        "auprc": 0.946445084708936,
+        "brier": 0.1309005299586867,
+        "ece": 0.1636526796541035,
+        "threshold": 0.609375,
+        "tp": 5700,
+        "fn": 312,
+        "fp": 1951,
+        "tn": 6900,
+        "sensitivity": 0.9481037924151696,
+        "specificity": 0.7795729296124732,
+        "ppv": 0.7450006535093452,
+        "npv": 0.956738768718802,
+        "accuracy": 0.8477427168135638
+      },
+      "rsna_main_auroc_ci": [
+        0.9530627769245851,
+        0.9596134923338149
+      ],
+      "rsna_all_auroc": 0.8290509208299088,
+      "rsna_false_alarm_other_abnormality": 0.7840284239912021,
+      "local_threshold_youden": 0.84814453,
+      "local_eval_80pct": {
+        "threshold": 0.84814453,
+        "tp": 4279,
+        "fn": 534,
+        "fp": 675,
+        "tn": 6436,
+        "sensitivity": 0.8890504882609599,
+        "specificity": 0.9050766418225284,
+        "ppv": 0.8637464675010093,
+        "npv": 0.9233859397417503,
+        "accuracy": 0.8986078497148607
+      },
+      "internal_threshold_eval_80pct": {
+        "threshold": 0.609375,
+        "tp": 4571,
+        "fn": 242,
+        "fp": 1560,
+        "tn": 5551,
+        "sensitivity": 0.9497195096613339,
+        "specificity": 0.7806215722120659,
+        "ppv": 0.7455553743271897,
+        "npv": 0.9582254445019851,
+        "accuracy": 0.8488762160348876
+      }
+    },
+    "efficientnet_b0": {
+      "auroc_between_classes": {
+        "opacity_vs_normal": 0.8790902265066523,
+        "other_vs_normal": 0.7757689311463314,
+        "opacity_vs_other": 0.6496122958662096
+      },
+      "threshold_internal": 0.05899048,
+      "internal_test": {
+        "auroc": 0.9961155407576157,
+        "auprc": 0.998510772115786,
+        "brier": 0.036736211892451305,
+        "ece": 0.04479654749417742,
+        "threshold": 0.05899048,
+        "tp": 596,
+        "fn": 10,
+        "fp": 5,
+        "tn": 221,
+        "sensitivity": 0.9834983498349835,
+        "specificity": 0.9778761061946902,
+        "ppv": 0.9916805324459235,
+        "npv": 0.9567099567099567,
+        "accuracy": 0.9819711538461539
+      },
+      "rsna_main": {
+        "auroc": 0.8790902265066523,
+        "auprc": 0.7742298264414107,
+        "brier": 0.19903934564441428,
+        "ece": 0.1962866598826223,
+        "threshold": 0.05899048,
+        "tp": 5763,
+        "fn": 249,
+        "fp": 3997,
+        "tn": 4854,
+        "sensitivity": 0.9585828343313373,
+        "specificity": 0.5484126087447746,
+        "ppv": 0.5904713114754099,
+        "npv": 0.9512051734273956,
+        "accuracy": 0.7143241606674292
+      },
+      "rsna_main_auroc_ci": [
+        0.8742340420670761,
+        0.8841720788545742
+      ],
+      "rsna_all_auroc": 0.7478664156465191,
+      "rsna_false_alarm_other_abnormality": 0.8466288808053464,
+      "local_threshold_youden": 0.98535156,
+      "local_eval_80pct": {
+        "threshold": 0.98535156,
+        "tp": 4098,
+        "fn": 715,
+        "fp": 1417,
+        "tn": 5694,
+        "sensitivity": 0.8514440058175774,
+        "specificity": 0.8007312614259597,
+        "ppv": 0.743064369900272,
+        "npv": 0.8884381338742393,
+        "accuracy": 0.8212009392821201
+      },
+      "internal_threshold_eval_80pct": {
+        "threshold": 0.05899048,
+        "tp": 4612,
+        "fn": 201,
+        "fp": 3214,
+        "tn": 3897,
+        "sensitivity": 0.9582381051319343,
+        "specificity": 0.5480241878779356,
+        "ppv": 0.5893176590851009,
+        "npv": 0.9509516837481699,
+        "accuracy": 0.7136028178463603
+      }
+    },
+    "vit_small": {
+      "auroc_between_classes": {
+        "opacity_vs_normal": 0.953703597211858,
+        "other_vs_normal": 0.852887660091373,
+        "opacity_vs_other": 0.7266687967437091
+      },
+      "threshold_internal": 0.033325195,
+      "internal_test": {
+        "auroc": 0.9970866555682116,
+        "auprc": 0.9989254485579075,
+        "brier": 0.05114892583902646,
+        "ece": 0.06816354042865509,
+        "threshold": 0.033325195,
+        "tp": 593,
+        "fn": 13,
+        "fp": 8,
+        "tn": 218,
+        "sensitivity": 0.9785478547854786,
+        "specificity": 0.9646017699115044,
+        "ppv": 0.9866888519134775,
+        "npv": 0.9437229437229437,
+        "accuracy": 0.9747596153846154
+      },
+      "rsna_main": {
+        "auroc": 0.953703597211858,
+        "auprc": 0.9400018488254668,
+        "brier": 0.08602015420392421,
+        "ece": 0.0653194392268766,
+        "threshold": 0.033325195,
+        "tp": 5681,
+        "fn": 331,
+        "fp": 1959,
+        "tn": 6892,
+        "sensitivity": 0.9449434464404525,
+        "specificity": 0.7786690769404587,
+        "ppv": 0.743586387434555,
+        "npv": 0.9541741658590613,
+        "accuracy": 0.8459261252775349
+      },
+      "rsna_main_auroc_ci": [
+        0.9502854029703284,
+        0.9567302711520481
+      ],
+      "rsna_all_auroc": 0.8238768568706241,
+      "rsna_false_alarm_other_abnormality": 0.7724388799593943,
+      "local_threshold_youden": 0.43408203,
+      "local_eval_80pct": {
+        "threshold": 0.43408203,
+        "tp": 4208,
+        "fn": 605,
+        "fp": 624,
+        "tn": 6487,
+        "sensitivity": 0.8742987741533347,
+        "specificity": 0.9122486288848263,
+        "ppv": 0.8708609271523179,
+        "npv": 0.914692611393119,
+        "accuracy": 0.8969305602146931
+      },
+      "internal_threshold_eval_80pct": {
+        "threshold": 0.033325195,
+        "tp": 4550,
+        "fn": 263,
+        "fp": 1547,
+        "tn": 5564,
+        "sensitivity": 0.9453563266154166,
+        "specificity": 0.7824497257769653,
+        "ppv": 0.746268656716418,
+        "npv": 0.9548652823065042,
+        "accuracy": 0.8482053002348205
+      }
+    }
+  }
+}

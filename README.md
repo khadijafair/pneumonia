@@ -67,25 +67,36 @@ Test : 832 images, 397 patients (enfants, jeu de Kermany).
 
 ![ROC et calibration](results/roc_calibration.png)
 
-## Étape 4 — Validation externe sur RSNA (code prêt, résultats à venir)
+## Étape 4 — Validation externe sur RSNA (résultats du 20/11/2026)
 
-Le jeu de Kermany ne contient que des enfants d'un seul hôpital. On teste les modèles, **sans les
-réentraîner**, sur la [RSNA Pneumonia Detection Challenge](https://www.kaggle.com/c/rsna-pneumonia-detection-challenge)
-(environ 26 700 radios d'adultes en DICOM, issues du NIH) :
+Modèles entraînés sur des **enfants** (Kermany), testés **sans réentraînement** sur 26 684 radios
+d'**adultes** de la [RSNA Pneumonia Detection Challenge](https://www.kaggle.com/c/rsna-pneumonia-detection-challenge)
+(DICOM, NIH) : 6 012 « Lung Opacity », 8 851 « Normal », 11 821 « No Lung Opacity / Not Normal »
+(autres anomalies). Rapport complet : [`results_rsna/evaluation_external.md`](results_rsna/evaluation_external.md).
 
-- `src/pneumonia/data/rsna.py` : index RSNA (une ligne par patient, boîtes des opacités gardées pour l'étape 5), lecture DICOM ;
-- `scripts/predict_external.py` : prédictions des checkpoints sur RSNA ;
-- `scripts/evaluate_external.py` : tâche principale « Lung Opacity » contre « Normal », seuil **interne** appliqué tel quel,
-  taux de fausses alertes sur les autres anomalies (« No Lung Opacity / Not Normal »), IC 95 % par bootstrap,
-  et recalibrage local (seuil choisi sur 20 % de RSNA, évalué sur les 80 % restants) ;
-- notebook Kaggle : `notebooks/kaggle_step4_rsna.ipynb`.
+| modèle | AUROC enfants (interne) | AUROC adultes, opacité vs normal [IC 95 %] | sens. / spéc. au seuil interne | fausses alertes sur autres anomalies |
+|---|---|---|---|---|
+| DenseNet121 | 0,996 | **0,957** [0,953 ; 0,960] | 94,8 % / 78,0 % | 78 % |
+| EfficientNet-B0 | 0,996 | **0,879** [0,874 ; 0,884] | 95,9 % / 54,8 % | 85 % |
+| ViT-Small | 0,997 | **0,954** [0,950 ; 0,957] | 94,5 % / 77,9 % | 77 % |
+
+- Les 3 modèles, **à égalité en interne**, se séparent nettement chez l'adulte : EfficientNet-B0 perd beaucoup plus.
+- La sensibilité tient (≈ 95 %) mais la spécificité chute : le seuil fixé chez l'enfant ne convient pas.
+- Le modèle détecte surtout « radio anormale » : il classe mal opacité contre autre anomalie
+  (AUROC 0,65 à 0,73), une catégorie absente des données d'entraînement.
+- Un seuil réajusté sur 20 % de RSNA donne, sur les 80 % restants, sensibilité 88,9 % / spécificité 90,5 %
+  (DenseNet121) et 87,4 % / 91,2 % (ViT-Small).
+- Reproductibilité : DenseNet121 et EfficientNet-B0 réentraînés donnent des prédictions **identiques au bit près**
+  à l'exécution du 19/11 ; ViT-Small non (opérations GPU non déterministes), avec des métriques internes proches.
+
+![interne vs externe](results_rsna/external.png)
 
 ## Feuille de route
 
 - [x] Étape 1 — audit des données et découpage par patient
 - [x] Étape 2 — entraînement PyTorch Lightning + Hydra, comparaison EfficientNet / DenseNet121 / ViT, suivi MLflow
 - [x] Étape 3 — évaluation clinique : AUC, rappel, choix du seuil, intervalles de confiance
-- [ ] Étape 4 — validation externe sur RSNA Pneumonia Detection Challenge
+- [x] Étape 4 — validation externe sur RSNA Pneumonia Detection Challenge
 - [ ] Étape 5 — Grad-CAM confronté aux boîtes annotées par des radiologues (RSNA)
 - [ ] Étape 6 — API FastAPI, Docker, export ONNX (latence CPU), démo Gradio sur Hugging Face Spaces
 
