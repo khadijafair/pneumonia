@@ -91,14 +91,19 @@ d'**adultes** de la [RSNA Pneumonia Detection Challenge](https://www.kaggle.com/
 
 ![interne vs externe](results_rsna/external.png)
 
-## Étape 5 — Démo en ligne avec Grad-CAM (Hugging Face Spaces)
+## Étape 5 — Démo en ligne avec Grad-CAM (Hugging Face Spaces, gratuit)
 
 - `scripts/export_model.py` : checkpoint Lightning → `model.safetensors` (poids seuls, sans pickle) + `config.json`
   (prétraitement, seuil recalculé sur la validation, métriques interne et externe).
-- `demo/` : application Gradio (probabilité, décision au seuil pédiatrique, carte **Grad-CAM** codée sans bibliothèque
-  externe, avertissements tirés de la validation externe).
+- `scripts/export_onnx.py` : export **ONNX** qui renvoie la probabilité **et** la carte d'activation en un seul calcul.
+  Pour ce réseau (pooling moyen puis une couche linéaire), Grad-CAM = CAM : les poids de Grad-CAM sont ceux du
+  classifieur, donc aucun calcul de gradient n'est nécessaire. Le script vérifie l'égalité ONNX = PyTorch et
+  CAM = Grad-CAM (écart < 10⁻³) et mesure la latence CPU.
+- `demo_static/` : page HTML + JavaScript qui exécute le modèle **dans le navigateur** (ONNX Runtime Web) : aucun
+  serveur, l'image ne quitte pas l'ordinateur du visiteur. Hébergée gratuitement en *Static Space*.
+- `demo/` : la même démo en Gradio (Python), pour un usage local (`python demo/app.py`) ou un Space Gradio.
 - `scripts/publish_hf.py` : publie le modèle (avec sa fiche) et la démo sur Hugging Face.
-- Notebook Kaggle : `notebooks/kaggle_step5_demo.ipynb`. Tests : export → chargement → prédiction identique au réseau d'origine.
+- Notebook Kaggle : `notebooks/kaggle_step5_demo.ipynb`.
 
 ## Feuille de route
 
@@ -106,7 +111,7 @@ d'**adultes** de la [RSNA Pneumonia Detection Challenge](https://www.kaggle.com/
 - [x] Étape 2 — entraînement PyTorch Lightning + Hydra, comparaison EfficientNet / DenseNet121 / ViT, suivi MLflow
 - [x] Étape 3 — évaluation clinique : AUC, rappel, choix du seuil, intervalles de confiance
 - [x] Étape 4 — validation externe sur RSNA Pneumonia Detection Challenge
-- [x] Étape 5 — démo en ligne (Gradio, Hugging Face Spaces) avec Grad-CAM
+- [x] Étape 5 — démo en ligne (ONNX dans le navigateur, Hugging Face Spaces) avec Grad-CAM
 - [ ] Option — Grad-CAM confronté aux boîtes annotées par des radiologues (RSNA)
 - [ ] Étape 6 — API FastAPI, Docker, export ONNX (latence CPU), démo Gradio sur Hugging Face Spaces
 

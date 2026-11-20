@@ -75,3 +75,29 @@ def test_export_then_demo_predict(tmp_path):
     x = torch.randn(1, 3, 64, 64)
     with torch.no_grad():
         assert torch.allclose(model(x), net.eval()(x), atol=1e-6)
+
+
+def test_export_onnx_matches_torch_and_gradcam(tmp_path):
+    pytest.importorskip("onnxruntime")
+    from safetensors.torch import save_file
+
+    torch.manual_seed(0)
+    net = timm.create_model("densenet121", pretrained=False, num_classes=1)
+    save_file(
+        {k: v.contiguous() for k, v in net.state_dict().items()}, tmp_path / "model.safetensors"
+    )
+    cfg = {
+        "timm_name": "densenet121",
+        "img_size": 64,
+        "mean": [0.5] * 3,
+        "std": [0.25] * 3,
+        "threshold": 0.5,
+    }
+    (tmp_path / "config.json").write_text(json.dumps(cfg))
+    # the script itself asserts ONNX == PyTorch and CAM == backward-pass Grad-CAM
+    subprocess.run(
+        [sys.executable, str(ROOT / "scripts/export_onnx.py"), "--model-dir", str(tmp_path)],
+        check=True,
+    )
+    assert (tmp_path / "model.onnx").stat().st_size > 1e6
+    assert json.loads((tmp_path / "config.json").read_text())["onnx"]["cpu_latency_ms_median"] > 0
