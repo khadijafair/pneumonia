@@ -1,8 +1,11 @@
 # Pneumonia-X — détection de pneumonie sur radiographies thoraciques
 
-Projet de bout en bout : données auditées et découpées par patient, comparaison d'architectures
-(PyTorch Lightning), suivi MLflow, évaluation clinique (rappel, seuil), validation externe,
-explicabilité vérifiée et mise en service (FastAPI, Docker, ONNX, démo Gradio).
+**▶ Démo en ligne : [huggingface.co/spaces/khadija1ab/pneumonia-x](https://huggingface.co/spaces/khadija1ab/pneumonia-x)** (le modèle tourne dans votre navigateur, aucune image n'est envoyée) · Modèle : [khadija1ab/pneumonia-x-densenet121](https://huggingface.co/khadija1ab/pneumonia-x-densenet121)
+
+Projet de bout en bout : données auditées et découpées par patient, comparaison de 3 architectures
+(PyTorch Lightning, Hydra, MLflow), évaluation clinique (seuil, intervalles de confiance, calibration),
+validation externe sur 26 684 radiographies d'adultes, et démo publique (export ONNX exécuté dans le
+navigateur, carte Grad-CAM).
 
 ## Étape 1 — Données (fait)
 

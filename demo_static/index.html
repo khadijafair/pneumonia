@@ -108,16 +108,20 @@ for (const el of document.querySelectorAll("[data-m]")) {
 $("thrval").textContent = fmt(cfg.threshold, 2);
 $("thr").style.left = `${100 * cfg.threshold}%`;
 
-let session;
-try {
-  session = await ort.InferenceSession.create(base + "model.onnx", { executionProviders: ["wasm"] });
-  $("status").textContent = "Modèle prêt. Choisissez une image ou un exemple.";
-} catch (e) {
-  $("status").textContent = "Impossible de charger le modèle : " + e;
-}
+// Start loading the model now, but keep the page usable (examples visible) while it downloads.
+const t0Load = performance.now();
+const ready = ort.InferenceSession.create(base + "model.onnx", { executionProviders: ["wasm"] })
+  .then((s) => {
+    $("status").textContent = `Modèle prêt (chargé en ${fmt((performance.now() - t0Load) / 1000, 0)} s). Choisissez une image ou un exemple.`;
+    return s;
+  })
+  .catch((e) => { $("status").textContent = "Impossible de charger le modèle : " + e; return null; });
 
 let last = null;
 async function analyse(img) {
+  $("verdict").textContent = "";
+  $("probtxt").textContent = "Analyse en attente du modèle…";
+  const session = await ready;
   if (!session) return;
   const s = cfg.img_size;
   const small = new OffscreenCanvas(s, s).getContext("2d", { willReadFrequently: true });
