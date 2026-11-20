@@ -11,3 +11,4 @@ outputs/
 mlflow.db
 mlartifacts/
 results.zip
+export/

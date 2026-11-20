@@ -91,13 +91,23 @@ d'**adultes** de la [RSNA Pneumonia Detection Challenge](https://www.kaggle.com/
 
 ![interne vs externe](results_rsna/external.png)
 
+## Étape 5 — Démo en ligne avec Grad-CAM (Hugging Face Spaces)
+
+- `scripts/export_model.py` : checkpoint Lightning → `model.safetensors` (poids seuls, sans pickle) + `config.json`
+  (prétraitement, seuil recalculé sur la validation, métriques interne et externe).
+- `demo/` : application Gradio (probabilité, décision au seuil pédiatrique, carte **Grad-CAM** codée sans bibliothèque
+  externe, avertissements tirés de la validation externe).
+- `scripts/publish_hf.py` : publie le modèle (avec sa fiche) et la démo sur Hugging Face.
+- Notebook Kaggle : `notebooks/kaggle_step5_demo.ipynb`. Tests : export → chargement → prédiction identique au réseau d'origine.
+
 ## Feuille de route
 
 - [x] Étape 1 — audit des données et découpage par patient
 - [x] Étape 2 — entraînement PyTorch Lightning + Hydra, comparaison EfficientNet / DenseNet121 / ViT, suivi MLflow
 - [x] Étape 3 — évaluation clinique : AUC, rappel, choix du seuil, intervalles de confiance
 - [x] Étape 4 — validation externe sur RSNA Pneumonia Detection Challenge
-- [ ] Étape 5 — Grad-CAM confronté aux boîtes annotées par des radiologues (RSNA)
+- [x] Étape 5 — démo en ligne (Gradio, Hugging Face Spaces) avec Grad-CAM
+- [ ] Option — Grad-CAM confronté aux boîtes annotées par des radiologues (RSNA)
 - [ ] Étape 6 — API FastAPI, Docker, export ONNX (latence CPU), démo Gradio sur Hugging Face Spaces
 
 > Projet à visée pédagogique et de démonstration, pas un dispositif médical.
