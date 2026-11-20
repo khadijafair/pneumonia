@@ -1,0 +1,9 @@
+{
+  "model": "vit_small",
+  "best_epoch_val_auroc": 0.9970720410346985,
+  "test_loss": 0.0403,
+  "test_accuracy": 0.9651,
+  "test_auroc": 0.9966,
+  "test_recall": 0.9571,
+  "test_specificity": 0.9867
+}

@@ -45,11 +45,33 @@ mlflow ui --backend-store-uri sqlite:///mlflow.db
 Sur GPU Kaggle : `notebooks/kaggle_train.ipynb` (entraîne les 3 modèles, refait la vérification
 des identifiants patients avec des embeddings profonds et produit `results.zip`).
 
+## Étape 3 — Évaluation clinique (résultats du 19/11/2026, GPU Kaggle T4)
+
+`scripts/evaluate.py` lit les prédictions sauvegardées (`results/<modèle>/pred_*.csv`) :
+seuil choisi **sur la validation uniquement** (sensibilité ≥ 98 %) puis appliqué une fois au test,
+intervalles de confiance à 95 % par **bootstrap sur les patients**, comparaison appariée des AUROC,
+calibration (Brier, ECE), sensibilité par sous-type (bactérienne / virale), liste des erreurs.
+Rapport complet : [`results/evaluation.md`](results/evaluation.md).
+
+Test : 832 images, 397 patients (enfants, jeu de Kermany).
+
+| modèle | AUROC [IC 95 %] | sensibilité | spécificité | pneumonies manquées | fausses alertes |
+|---|---|---|---|---|---|
+| DenseNet121 | 0,9964 [0,9937 ; 0,9986] | 97,9 % | 96,5 % | 13 | 8 |
+| EfficientNet-B0 | 0,9961 [0,9927 ; 0,9987] | 98,3 % | 97,8 % | 10 | 5 |
+| ViT-Small | 0,9966 [0,9938 ; 0,9989] | 98,2 % | 96,5 % | 11 | 8 |
+
+- Les écarts d'AUROC entre modèles ne sont **pas significatifs** (tous les IC de différence contiennent 0).
+- Les 4 pneumonies manquées par les 3 modèles sont **virales** ; les 3 fausses alertes communes sont des radios « NORMAL2 ».
+- Limite : évaluation interne sur des enfants d'un seul centre ; la validation externe (étape 4) dira si le modèle généralise.
+
+![ROC et calibration](results/roc_calibration.png)
+
 ## Feuille de route
 
 - [x] Étape 1 — audit des données et découpage par patient
 - [x] Étape 2 — entraînement PyTorch Lightning + Hydra, comparaison EfficientNet / DenseNet121 / ViT, suivi MLflow
-- [ ] Étape 3 — évaluation clinique : AUC, rappel, choix du seuil, intervalles de confiance
+- [x] Étape 3 — évaluation clinique : AUC, rappel, choix du seuil, intervalles de confiance
 - [ ] Étape 4 — validation externe sur RSNA Pneumonia Detection Challenge
 - [ ] Étape 5 — Grad-CAM confronté aux boîtes annotées par des radiologues (RSNA)
 - [ ] Étape 6 — API FastAPI, Docker, export ONNX (latence CPU), démo Gradio sur Hugging Face Spaces
