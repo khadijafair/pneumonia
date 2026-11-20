@@ -14,6 +14,14 @@ from torchvision import transforms as T
 from pneumonia.data.index import find_dataset_root
 
 
+def load_image(path: Path) -> Image.Image:
+    if path.suffix.lower() == ".dcm":
+        from pneumonia.data.rsna import read_dicom
+
+        return read_dicom(path)
+    return Image.open(path).convert("RGB")
+
+
 def build_transforms(img_size: int, mean, std, train: bool) -> T.Compose:
     # No horizontal flip: on a chest X-ray the heart side is meaningful.
     if train:
@@ -38,7 +46,7 @@ class ChestXrayDataset(Dataset):
 
     def __getitem__(self, i: int):
         row = self.df.iloc[i]
-        img = Image.open(self.root / row["path"]).convert("RGB")
+        img = load_image(self.root / row["path"])
         return self.transform(img), torch.tensor(float(row["target"])), i
 
 

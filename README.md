@@ -67,6 +67,19 @@ Test : 832 images, 397 patients (enfants, jeu de Kermany).
 
 ![ROC et calibration](results/roc_calibration.png)
 
+## Étape 4 — Validation externe sur RSNA (code prêt, résultats à venir)
+
+Le jeu de Kermany ne contient que des enfants d'un seul hôpital. On teste les modèles, **sans les
+réentraîner**, sur la [RSNA Pneumonia Detection Challenge](https://www.kaggle.com/c/rsna-pneumonia-detection-challenge)
+(environ 26 700 radios d'adultes en DICOM, issues du NIH) :
+
+- `src/pneumonia/data/rsna.py` : index RSNA (une ligne par patient, boîtes des opacités gardées pour l'étape 5), lecture DICOM ;
+- `scripts/predict_external.py` : prédictions des checkpoints sur RSNA ;
+- `scripts/evaluate_external.py` : tâche principale « Lung Opacity » contre « Normal », seuil **interne** appliqué tel quel,
+  taux de fausses alertes sur les autres anomalies (« No Lung Opacity / Not Normal »), IC 95 % par bootstrap,
+  et recalibrage local (seuil choisi sur 20 % de RSNA, évalué sur les 80 % restants) ;
+- notebook Kaggle : `notebooks/kaggle_step4_rsna.ipynb`.
+
 ## Feuille de route
 
 - [x] Étape 1 — audit des données et découpage par patient
